@@ -1,68 +1,69 @@
-name: build-x86-64-immortalwrt-24.10.2
+名字：名称：build-x86-64-immortalwrt-24.10.2
 
-on:
-  workflow_dispatch:
-    inputs:
-      profile:
-        description: '请输入要编译固件大小 单位(MB)'
-        required: true
-        default: '1024'
-      include_docker:
-        description: |
+在上
+  工作流触发输入：
+    输入：
+      个人资料：
+        描述: '请输入要编译固件大小 单位(MB)'
+        必填： 真
+        默认： '2048'
+      包含_docker：
+        描述：|
           是否编译 Docker 插件
-        required: true
-        default: 'yes'
-        type: choice
-        options:
-          - 'yes'
-          - 'no'
-      enable_pppoe:
-        description: "是否配置PPPoE拨号信息?"
-        required: true
-        default: 'no'
-        type: choice
-        options:
-        - 'yes'
-        - 'no'
-      pppoe_account:
-        description: "宽带账号 (若启用PPPoE)"
-        required: false
-      pppoe_password:
-        description: "宽带密码 (若启用PPPoE)"
-        required: false
+        必填： 真
+        默认：'yes'
+        类型：
+类型：选择
+        选项：
+          - 是
+          - ‘不’
+      启用_pppoe：
+        描述: "是否配置PPPoE拨号信息?"
+        必填： 真
+        默认：'no'
+        类型:         类型：选择
+        选项:
+        - '是'
+        - 不
+      pppoe账号：
+        描述: "宽带账号（若启用PPPoE）"
+        必填： 否
+      pppoe_password：
+        描述: "宽频密码（若启用PPPoE）"
+        必填： 否
 
-jobs:
-  build:
-    runs-on: ubuntu-22.04
+工作：
+  构建:
+    运行于：运行于：ubuntu-22.04
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    步骤：
+      - 名称:       - 名称：结账代码
+        uses:         用途：actions/checkout@v3
 
-      - name: Set executable permissions
-        run: chmod +x ${{ github.workspace }}/x86-64/build.sh
+      - 名称:       - 名称: 设置可执行权限
+        run:         运行: chmod +x ${{ github.workspace }}/x86-64/build.sh{{ github.workspace }}/x86-64/build.sh
 
 
-      - name: Validate PPPoE Inputs
-        run: |
+      - 名称:       - 名称: 验证 PPPoE 输入
+        运行： |
           if [[ "${{ inputs.enable_pppoe }}" == "yes" ]]; then
             if [[ -z "${{ inputs.pppoe_account }}" || -z "${{ inputs.pppoe_password }}" ]]; then
-              echo "Error: PPPoE account and password must be provided when PPPoE is enabled!"
-              exit 1
-            fi
-          fi
+              echo "错误：启用PPPoE时必须提供PPPoE账号和密码！"
+              退出 1
+            输入：fi
+          输入：fi
 
-      - name: Build ImmortalWrt-x86-64-efi
-        run: |
+- 名称: - 名称: 构建 ImmortalWrt-x86-64-efi
+        运行： |
           profiles="${{ github.event.inputs.profile }}"
           include_docker="${{ github.event.inputs.include_docker }}"
-          IFS=',' read -r -a profile_array <<< "$profiles"
+IFS=',' read -r -a profile_array << $profiles
           
-          for profile in "${profile_array[@]}"; do
-            echo "Building for profile: $profile"
+          对于“${profile_array[@]}”中的每个配置文件
+            echo "正在为配置文件 $profile 编译"
             
             docker run --rm -i \
-              --user root \
+              --用户 root
               -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
               -v "${{ github.workspace }}/files:/home/build/immortalwrt/files" \
               -v "${{ github.workspace }}/x86-64/imm.config:/home/build/immortalwrt/.config" \
